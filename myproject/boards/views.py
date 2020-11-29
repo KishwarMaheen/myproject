@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, reverse, redirect
 from django.contrib.auth.models import User
 # from django.http import HttpResponse
@@ -27,19 +28,22 @@ def board_topics(request, pk):
     return render(request, 'topics.html', context={'board': board})
 
 
+@login_required
 def new_topic(request, pk):
     board = get_object_or_404(Board, pk=pk)
-    user = User.objects.first()
+    # user = User.objects.first()
     if request.method == 'POST':
         form = NewTopicForm(request.POST)
         if form.is_valid():
             topic = form.save(commit=False)
             topic.board = board
-            topic.starter = user
+            # topic.starter = user
+            topic.starter = request.user
             topic.save()
             post = Post.objects.create(message=form.cleaned_data.get('message'),
                                        topic=topic,
-                                       created_by=user)
+                                       created_by=request.user)
+                                       # created_by=user)
         # subject = request.POST['subject']
         # message = request.POST['message']
         # user = User.objects.first()
@@ -50,3 +54,4 @@ def new_topic(request, pk):
     else:
         form = NewTopicForm()
     return render(request, 'new_topic.html', context={'board': board, 'form': form})
+
