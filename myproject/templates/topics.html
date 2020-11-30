@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load humanize %}
 {% block breadcrumb %}
     <li class="breadcrumb-item">Boards</li>
     <li class="breadcrumb-item active">{{board.name}}</li>
@@ -26,7 +26,7 @@
     <td>{{ topic.starter.username }}</td>
     <td>{{ topic.replies }}</td>
     <td>{{ topic.views }}</td>
-    <td>{{ topic.last_updated }}</td>
+    <td>{{ topic.last_updated|naturaltime }}</td>
   </tr>
 {% endfor %}
     </tbody>
