@@ -6,7 +6,7 @@ from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import UpdateView
 
-from .forms import SignUpForm
+from .forms import SignUpForm, ProfileUpdateForm
 from django.contrib.auth import login
 
 
@@ -30,8 +30,8 @@ def signup(request):
 @method_decorator(login_required, name='dispatch')
 class UserUpdateView(UpdateView):
     model = Profile
-    fields = ('dob', 'photo')
     template_name = 'my_account.html'
+    form_class = ProfileUpdateForm
     success_url = reverse_lazy('my_account')
 
     def get_object(self):
