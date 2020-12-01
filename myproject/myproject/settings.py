@@ -136,3 +136,5 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 LOGIN_URL = 'login'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = 'media/'
+
+AUTH_USER_MODEL = 'accounts.Profile'
