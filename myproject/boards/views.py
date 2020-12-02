@@ -13,7 +13,7 @@ from django.views.generic import UpdateView, ListView
 from .models import Board, Topic, Post
 from .forms import NewTopicForm, PostForm
 from django.views.decorators.csrf import csrf_exempt
-from .serializers import BoardSerializer
+from .serializers import BoardSerializer, TopicSerializer
 from django.http import JsonResponse
 
 
@@ -178,3 +178,13 @@ def get_particular_board(request, pk):
             return HttpResponse(status=404)
         return JsonResponse(serializer.data, safe=False)
 
+
+@csrf_exempt
+def get_all_topics_of_particular_board(request, pk):
+    if request.method == 'GET':
+        try:
+            board = Board.objects.get(pk=pk)
+        except Board.DoesNotExist:
+            return HttpResponse(status=404)
+        serializer = TopicSerializer(Topic.objects.filter(board=board), many=True)
+        return JsonResponse(serializer.data, safe=False)
