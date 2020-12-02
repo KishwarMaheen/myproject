@@ -12,6 +12,9 @@ from django.views.generic import UpdateView, ListView
 
 from .models import Board, Topic, Post
 from .forms import NewTopicForm, PostForm
+from django.views.decorators.csrf import csrf_exempt
+from .serializers import BoardSerializer
+from django.http import JsonResponse
 
 
 # Create your views here.
@@ -157,3 +160,11 @@ class PostUpdateView(UpdateView):
         post.updated_at = timezone.now()
         post.save()
         return redirect('topic_posts', pk=post.topic.board.pk, topic_pk=post.topic.pk)
+
+
+@csrf_exempt
+def get_all_boards(request):
+    if request.method == 'GET':
+        serializer = BoardSerializer(Board.objects.all(), many=True)
+        return JsonResponse(serializer.data, safe=False)
+
