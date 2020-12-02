@@ -188,3 +188,18 @@ def get_all_topics_of_particular_board(request, pk):
             return HttpResponse(status=404)
         serializer = TopicSerializer(Topic.objects.filter(board=board), many=True)
         return JsonResponse(serializer.data, safe=False)
+
+
+@csrf_exempt
+def get_particular_topic(request, board_pk, pk):
+    if request.method == 'GET':
+        # if not Board.objects.filter(pk=board_pk).exists():
+        #     return HttpResponse(status=404)
+        try:
+            topic = Topic.objects.filter(board__pk=board_pk).get(pk=pk)
+            topic.views += 1
+            topic.save()
+        except (Board.DoesNotExist, Topic.DoesNotExist):
+            return HttpResponse(status=404)
+        serializer = TopicSerializer(topic)
+        return JsonResponse(serializer.data, safe=False)
