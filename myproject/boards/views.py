@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, reverse, redirect
 from django.db.models import Count
 # from django.contrib.auth.models import User
-# from django.http import HttpResponse
+from django.http import HttpResponse
 # from django.http import Http404
 # from django.http import HttpResponseRedirect
 from django.utils import timezone
@@ -166,5 +166,15 @@ class PostUpdateView(UpdateView):
 def get_all_boards(request):
     if request.method == 'GET':
         serializer = BoardSerializer(Board.objects.all(), many=True)
+        return JsonResponse(serializer.data, safe=False)
+
+
+@csrf_exempt
+def get_particular_board(request, pk):
+    if request.method == 'GET':
+        try:
+            serializer = BoardSerializer(Board.objects.get(pk=pk))
+        except Board.DoesNotExist:
+            return HttpResponse(status=404)
         return JsonResponse(serializer.data, safe=False)
 
